@@ -10,12 +10,15 @@ if uploaded_file is not None:
     all_df = pd.read_csv(uploaded_file)
     st.dataframe(all_df)
 
+
 stop_words = pd.read_csv('stopword_farsi.csv')['token'].to_list()
 
 file_col = all_df.columns.to_list() 
 # keyword_col = st.selectbox(label='Choose KEYWORD column name:',options=file_col)
 title_col = st.selectbox(label='Choose TITLE column name:',options=file_col)
 cluster_col = st.selectbox(label='Choose CLUSTER column name:',options=file_col)
+
+all_df = all_df.astype({title_col:'str',cluster_col:'str'})
 
 def generate_N_grams(text,ngram):
   words=[word for word in text.split(" ") if word not in set(stop_words)]  
