@@ -13,7 +13,7 @@ if uploaded_file is not None:
 stop_words = pd.read_csv('stopword_farsi.csv')['token'].to_list()
 
 file_col = all_df.columns.to_list() 
-keyword_col = st.selectbox(label='Choose KEYWORD column name:',options=file_col)
+# keyword_col = st.selectbox(label='Choose KEYWORD column name:',options=file_col)
 title_col = st.selectbox(label='Choose TITLE column name:',options=file_col)
 cluster_col = st.selectbox(label='Choose CLUSTER column name:',options=file_col)
 
@@ -35,15 +35,15 @@ if st.checkbox("Are you ready to generate internal links?"):
     for index,cluster in enumerate(cluster_name[:200]):
         title_list = all_df[all_df[cluster_col]==cluster][title_col].to_list()
         title_str = " ".join(title_list)
-        one_token = generate_N_grams(title_str,ngram=1)
+        # one_token = generate_N_grams(title_str,ngram=1)
         two_token = generate_N_grams(title_str,ngram=2)
         data_two = Counter(two_token)
-        data_one = Counter(one_token)
-        temp_one = pd.DataFrame(data_one.items(),columns=['token','count'])
-        temp_one = temp_one[~temp_one['token'].isin(stop_words)]
-        temp_one = temp_one.sort_values(by='count',ascending=False)[:30]
-        temp_one['cluster'] = cluster
-        unigram_df = pd.concat([unigram_df,temp_one])
+        # data_one = Counter(one_token)
+        # temp_one = pd.DataFrame(data_one.items(),columns=['token','count'])
+        # temp_one = temp_one[~temp_one['token'].isin(stop_words)]
+        # temp_one = temp_one.sort_values(by='count',ascending=False)[:30]
+        # temp_one['cluster'] = cluster
+        # unigram_df = pd.concat([unigram_df,temp_one])
 
 
         temp_two = pd.DataFrame(data_two.items(),columns=['token','count'])
@@ -57,6 +57,7 @@ if st.checkbox("Are you ready to generate internal links?"):
     merge_df = pd.merge(bigram_df,bigram_df,on='token',how='inner')
     grouped_df = merge_df.groupby(by=['cluster_x','cluster_y']).count()
     grouped_df = grouped_df[grouped_df['token']!=30]
+    st.write(grouped_df)
     grouped_df = grouped_df[grouped_df['token']>7].reset_index()
     
     @st.cache
@@ -65,6 +66,7 @@ if st.checkbox("Are you ready to generate internal links?"):
         return df.to_csv().encode('utf-8')
 
     csv = convert_df(grouped_df)
+    st.write(grouped_df)
     today = datetime.today()
     st.download_button(
         label="Download data as CSV",
