@@ -57,7 +57,6 @@ if st.checkbox("Are you ready to generate internal links?"):
     merge_df = pd.merge(bigram_df,bigram_df,on='token',how='inner')
     grouped_df = merge_df.groupby(by=['cluster_x','cluster_y']).count()
     grouped_df = grouped_df[grouped_df['token']!=30]
-    st.write(grouped_df)
     grouped_df = grouped_df[grouped_df['token']>7].reset_index()
     
     @st.cache
