@@ -62,6 +62,11 @@ if st.checkbox("Are you ready to generate internal links?"):
     grouped_df = grouped_df[grouped_df['token']!=30]
     grouped_df = grouped_df[grouped_df['token']>7].reset_index()
     
+    merge_df['token'] = merge_df.groupby(by=['cluster_x','cluster_y'])['token'].transform(lambda x : '|'.join(x))
+    merge_df = merge_df.drop_duplicates()
+
+    grouped_df = pd.merge(grouped_df,merge_df,on=['cluster_x','cluster_y'],how='left').rename(columns={"token_x":'count',"token_y":'tokens'})
+    
     @st.cache
     def convert_df(df):
         # IMPORTANT: Cache the conversion to prevent computation on every rerun
